@@ -10,7 +10,7 @@ You'll need Python >= 3.7 and the [LXML](https://pypi.org/project/lxml/) **pip**
 
     pip3 install lxml
 
-Then run the script with the target URL as a parameter. Example:
+Download and unpack [this repository](https://github.com/Matteljay/bitchute-dl/releases), then run the script with the target URL as a parameter. Example:
 
     python3 ./bitchute-dl.py https://www.bitchute.com/video/oX3AgHj0jlUX/
 
