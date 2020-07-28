@@ -10,7 +10,7 @@ You'll need Python >= 3.6 and you can use **pip** to automatically install this 
 
     sudo pip install bitchute-dl
 
-If you prefer to download [this repository](https://github.com/Matteljay/bitchute-dl/releases) you could install it like so:
+If you prefer to download [this repository](https://github.com/Matteljay/bitchute-dl/releases) you could install it after unpacking like so:
 
     sudo pip install .
 
