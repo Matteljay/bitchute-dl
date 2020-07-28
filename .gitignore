@@ -1,1 +1,4 @@
 vscode.*
+dist/
+build/
+bitchute_dl.egg-info/
