@@ -5,6 +5,9 @@ import pathlib
 import urllib.request
 from lxml import html
 
+def fixEmbedLink(url):
+    return url.replace('/embed/', '/video/')
+
 def getTree(url):
     if len(url) == 0:
         sys.exit('Parameter required, need BitChute URL')
@@ -64,7 +67,8 @@ def downloadVideo(target, publisher, date, title, extension):
     print('Done.')
 
 def main(argv):
-    tree = getTree(' '.join(argv))
+    url = fixEmbedLink(' '.join(argv))
+    tree = getTree(url)
     target = getTarget(tree)
     publisher = getPublisher(tree)
     date = getDate(tree)

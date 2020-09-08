@@ -13,7 +13,7 @@ except Exception:
 
 setup(
     name='bitchute-dl',
-    version='1.0.3',
+    version='1.0.4',
     license='MIT',
     author='Matteljay',
     author_email='matteljay@pm.me',
