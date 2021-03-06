@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys, re
 from datetime import datetime
+import os
 import pathlib
 import urllib.request
 from lxml import html
@@ -37,6 +38,20 @@ def getTitle(tree):
         newWords.append(word.capitalize())
     return ' '.join(newWords)
 
+def getDescription(tree):
+    match = tree.xpath('//div[@class="teaser"]')
+    if len(match) == 0:
+        sys.exit('Could not find page title XPath')
+    description = match[0].text_content()
+    return description
+
+def findPoster(tree):
+    match = tree.xpath('//video[@id="player"]/@poster')
+    if len(match) == 0:
+        sys.exit('Could not find page poster XPath')
+    poster_url = match[0]
+    return poster_url
+
 def getDate(tree):
     match = tree.xpath('//*[@id="video-watch"]/div/div[1]/div[3]/div/div[1]')
     if len(match) == 0:
@@ -56,25 +71,44 @@ def getPublisher(tree):
 def getExtension(target):
     return pathlib.Path(target).suffix
 
-def downloadVideo(target, publisher, date, title, extension):
+def makeVideoDirectory(publisher, date, title):
+    dir_name = os.path.join(publisher, date, title)
+    pathlib.Path(dir_name).mkdir(parents=True, exist_ok=True)
+    return dir_name
+
+def downloadVideo(target, output_directory, publisher, date, title, description, poster_url, extension):
     outputFile = f'{date} {title}{extension}'
-    pathlib.Path(publisher).mkdir(parents=True, exist_ok=True)
-    outputFull = publisher + '/' + outputFile
+    outputFull = os.path.join(output_directory, outputFile)
     if pathlib.Path(outputFull).is_file():
         sys.exit('File already exists: ' + outputFull)
+    # save description
+    outputDescriptionPath = os.path.join(output_directory, 'descripion.html')
+    with open(outputDescriptionPath, 'w') as desc_file:
+        print(description, file=desc_file)
+    # It's saved as: 'poster.jpg'
+    _, poster_extension = os.path.splitext(poster_url)
+    # Extension has the leading '.' already
+    urllib.request.urlretrieve(poster_url, os.path.join(output_directory, 'poster' + poster_extension))
+
+    # download the video
     print(f'Downloading video as: ' + outputFull)
     urllib.request.urlretrieve(target, outputFull)
     print('Done.')
 
-def main(argv):
-    url = fixEmbedLink(' '.join(argv))
-    tree = getTree(url)
-    target = getTarget(tree)
-    publisher = getPublisher(tree)
-    date = getDate(tree)
-    title = getTitle(tree)
-    extension = getExtension(target)
-    downloadVideo(target, publisher, date, title, extension)
+# Use like:
+#   bitchute-dl url1 url2 url3
+def main(urls):
+    for url in urls:
+        tree = getTree(url)
+        target = getTarget(tree)
+        publisher = getPublisher(tree)
+        date = getDate(tree)
+        title = getTitle(tree)
+        description = getDescription(tree)
+        poster_url = findPoster(tree)
+        output_directory = makeVideoDirectory(publisher, date, title)
+        extension = getExtension(target)
+        downloadVideo(target, output_directory, publisher, date, title, description, poster_url, extension)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
