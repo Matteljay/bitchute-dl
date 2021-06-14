@@ -66,8 +66,10 @@ def downloadVideo(target, publisher, date, title, extension):
     urllib.request.urlretrieve(target, outputFull)
     print('Done.')
 
-def main(argv):
-    url = fixEmbedLink(' '.join(argv))
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+    url = fixEmbedLink(' '.join(args))
     tree = getTree(url)
     target = getTarget(tree)
     publisher = getPublisher(tree)
@@ -77,6 +79,6 @@ def main(argv):
     downloadVideo(target, publisher, date, title, extension)
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    sys.exit(main())
 
 # EOF

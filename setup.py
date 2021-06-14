@@ -12,16 +12,21 @@ except Exception:
     long_description = ''
 
 setup(
-    name='bitchute-dl',
-    version='1.0.4',
+    name='bitchute_dl',
+    version='1.0.6',
     license='MIT',
     author='Matteljay',
     author_email='matteljay@pm.me',
     description='Download any BitChute video to your PC',
     long_description = long_description,
     long_description_context_type = 'text/markdown',
-    scripts = [ 'bitchute-dl' ],
-    install_requires=['lxml'],
+#    scripts = [ 'bitchute-dl' ],
+    entry_points = {'console_scripts': ['bitchute-dl = bitchute_dl.__main__:main']},
+#    install_requires=['lxml'],
+    install_requires=[
+        'lxml==4.5.0; python_version>="2" and python_version<"3"',
+        'lxml; python_version>="3"',
+    ],
     keywords=['bitchute', 'downloader', 'youtube-dl', 'video', 'archive'],
     url='https://libersystems.com',
     download_url='https://github.com/Matteljay/bitchute-dl/releases',
